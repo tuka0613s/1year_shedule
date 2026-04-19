@@ -202,15 +202,20 @@ body {
 }
 .day-row.today .day-info .date-num {
   color: var(--today-highlight);
-  background: rgba(56, 189, 248, 0.15);
-  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+.day-row.today .day-info .date-num::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 16px;
   height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0;
-  margin-left: -2px;
+  background: rgba(56, 189, 248, 0.15);
+  border-radius: 50%;
+  z-index: -1;
 }
 
 .schedule-area {
