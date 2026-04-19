@@ -441,7 +441,7 @@ but adding text overflow gracefully handles small screens. */
     font-size: 0.65rem;
   }
   .day-row {
-    min-height: 0;
+    min-height: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
   .day-info {
