@@ -426,26 +426,45 @@ but adding text overflow gracefully handles small screens. */
 
 @media (max-height: 600px) {
   .app-header {
-    height: 32px;
+    height: 28px;
+    padding: 0 12px;
   }
   .app-header h1 {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
-  .month-header {
-    height: 20px;
+  button {
+    padding: 4px 8px;
     font-size: 0.7rem;
   }
+  .month-header {
+    height: 18px;
+    font-size: 0.65rem;
+  }
   .day-row {
-    min-height: 0; 
+    min-height: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
   .day-info {
-    font-size: 0.5rem;
+    font-size: 9px;
+    line-height: 1;
+    width: 20px;
   }
   .day-info .date-num {
     width: 10px;
   }
+  .schedule-area {
+    padding: 0;
+  }
   .event {
-    font-size: 0.5rem;
+    font-size: 9px;
     padding: 0 2px;
+    top: 0;
+    bottom: 0;
+    border-radius: 1px;
+  }
+  .week-no-right {
+    transform: translateY(-50%) scale(0.7);
+    transform-origin: right center;
+    right: 0;
   }
 }
