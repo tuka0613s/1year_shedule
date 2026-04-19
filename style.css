@@ -493,10 +493,16 @@ body.ultra-compact .month-header {
   font-size: 0.6rem;
 }
 body.ultra-compact .calendar-grid {
+  grid-template-columns: repeat(12, 1fr) !important;
   padding-bottom: 0; 
+  overflow: hidden !important;
+}
+body.ultra-compact .days-container {
+  overflow: hidden;
 }
 body.ultra-compact .day-row {
   min-height: 0 !important;
+  flex: 1 1 0 !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 body.ultra-compact .day-info {
