@@ -6,13 +6,25 @@ const realToday = new Date(2026, 3, 19);
 const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 const dayChars = ['日', '月', '火', '水', '木', '金', '土'];
 
-let schedules = [
+const defaultSchedules = [
   { id: Date.now().toString() + '1', title: "新年イベント", start: "2026-01-01", end: "2026-01-03", color: "bg-orange" },
   { id: Date.now().toString() + '2', title: "システム移行", start: "2026-04-18", end: "2026-04-20", color: "bg-blue" },
   { id: Date.now().toString() + '3', title: "打ち合わせ", start: "2026-04-19", end: "2026-04-19", color: "bg-pink" },
   { id: Date.now().toString() + '4', title: "夏期休暇", start: "2026-08-10", end: "2026-08-15", color: "bg-green" },
   { id: Date.now().toString() + '5', title: "四半期報告会", start: "2026-10-05", end: "2026-10-05", color: "bg-purple" }
 ];
+
+let schedules = [];
+const saved = localStorage.getItem('yearSchedules');
+if (saved) {
+  schedules = JSON.parse(saved);
+} else {
+  schedules = defaultSchedules;
+}
+
+function saveSchedules() {
+  localStorage.setItem('yearSchedules', JSON.stringify(schedules));
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("current-year").textContent = currentYear;
@@ -239,6 +251,7 @@ function setupModal() {
   delBtn.addEventListener("click", () => {
     const id = document.getElementById("event-id").value;
     schedules = schedules.filter(s => s.id !== id);
+    saveSchedules();
     closeM();
     renderCalendar();
   });
@@ -273,6 +286,7 @@ function setupModal() {
       });
     }
 
+    saveSchedules();
     closeM();
     renderCalendar();
   });
