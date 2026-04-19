@@ -425,7 +425,27 @@ but adding text overflow gracefully handles small screens. */
 }
 
 @media (max-height: 600px) {
+  .app-header {
+    height: 32px;
+  }
+  .app-header h1 {
+    font-size: 1rem;
+  }
+  .month-header {
+    height: 20px;
+    font-size: 0.7rem;
+  }
   .day-row {
-    min-height: 28px; /* Improve tap targets on short landscape screens */
+    min-height: 0; 
+  }
+  .day-info {
+    font-size: 0.5rem;
+  }
+  .day-info .date-num {
+    width: 10px;
+  }
+  .event {
+    font-size: 0.5rem;
+    padding: 0 2px;
   }
 }
