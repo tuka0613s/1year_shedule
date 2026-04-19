@@ -474,4 +474,54 @@ but adding text overflow gracefully handles small screens. */
     transform-origin: right center;
     right: 0;
   }
+  }
+}
+
+/* ------------ ULTRA COMPACT MODE (FORCE FIT 1 SCREEN ONSCREEN) ------------ */
+body.ultra-compact .app-header {
+  height: 24px;
+  padding: 0 8px;
+}
+body.ultra-compact .app-header h1 { font-size: 0.8rem; }
+body.ultra-compact .header-controls button,
+body.ultra-compact .year-controls button {
+  padding: 2px 6px;
+  font-size: 0.6rem;
+}
+body.ultra-compact .month-header {
+  height: 16px;
+  font-size: 0.6rem;
+}
+body.ultra-compact .calendar-grid {
+  padding-bottom: 0; 
+}
+body.ultra-compact .day-row {
+  min-height: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+body.ultra-compact .day-info {
+  font-size: 8px;
+  line-height: 1;
+  width: 16px;
+}
+body.ultra-compact .day-info .date-num {
+  width: 8px;
+  margin-right: 1px;
+}
+body.ultra-compact .day-row.today .day-info .date-num::before {
+  width: 12px;
+  height: 12px;
+}
+body.ultra-compact .schedule-area {
+  padding: 0;
+}
+body.ultra-compact .event {
+  font-size: 8px;
+  padding: 0 1px;
+  top: 0;
+  bottom: 0;
+  border-radius: 0;
+}
+body.ultra-compact .week-no-right {
+  display: none !important;
 }

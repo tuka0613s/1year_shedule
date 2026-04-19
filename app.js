@@ -65,6 +65,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if(e.target.checked) document.getElementById("calendar").classList.add("show-week-no");
     else document.getElementById("calendar").classList.remove("show-week-no");
   });
+
+  const toggleCompact = document.getElementById("toggle-compact");
+  const isCompact = localStorage.getItem("ultraCompact") === "true";
+  if (isCompact) {
+    toggleCompact.checked = true;
+    document.body.classList.add("ultra-compact");
+  }
+  toggleCompact.addEventListener("change", (e) => {
+    if (e.target.checked) {
+      document.body.classList.add("ultra-compact");
+      localStorage.setItem("ultraCompact", "true");
+    } else {
+      document.body.classList.remove("ultra-compact");
+      localStorage.setItem("ultraCompact", "false");
+    }
+  });
 });
 
 function getWeekNumber(d) {
