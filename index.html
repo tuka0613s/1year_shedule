@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Year Schedule</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="year-controls">
+        <button id="btn-prev-year">&lt;</button>
+        <h1 id="current-year-display"><span id="current-year">2026</span></h1>
+        <button id="btn-next-year">&gt;</button>
+      </div>
+      <div class="header-controls">
+        <label class="toggle-label"><input type="checkbox" id="toggle-week"> 週番号</label>
+        <button id="btn-today">今日</button>
+      </div>
+    </header>
+    
+    <main class="calendar-grid" id="calendar">
+      <!-- Months will be injected here via JS -->
+    </main>
+  </div>
+
+  <!-- Modal for Adding/Editing Schedule -->
+  <div id="schedule-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2 id="modal-title">予定を追加</h2>
+      <form id="schedule-form">
+        <input type="hidden" id="event-id">
+        <div class="form-group">
+          <label>タイトル</label>
+          <input type="text" id="event-title" required placeholder="予定を入力...">
+        </div>
+        <div class="form-group row">
+          <div>
+            <label>開始日</label>
+            <input type="date" id="event-start" required>
+          </div>
+          <div>
+            <label>終了日</label>
+            <input type="date" id="event-end" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>カラー</label>
+          <div class="color-picker">
+            <label><input type="radio" name="color" value="accent-blue" checked><span class="color-dot bg-blue"></span></label>
+            <label><input type="radio" name="color" value="accent-pink"><span class="color-dot bg-pink"></span></label>
+            <label><input type="radio" name="color" value="accent-green"><span class="color-dot bg-green"></span></label>
+            <label><input type="radio" name="color" value="accent-purple"><span class="color-dot bg-purple"></span></label>
+            <label><input type="radio" name="color" value="accent-orange"><span class="color-dot bg-orange"></span></label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="btn-cancel">キャンセル</button>
+          <button type="button" class="btn-delete hidden" id="btn-delete">削除</button>
+          <button type="submit" class="btn-save">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
