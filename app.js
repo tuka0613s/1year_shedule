@@ -80,6 +80,31 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("ultraCompact", "false");
     }
   });
+
+  // Theme Toggle Logic
+  const themes = ['dark', 'light', 'aurora'];
+  const themeIcons = { 'dark': '🌙', 'light': '☀️', 'aurora': '✨' };
+  let currentThemeIndex = 0;
+  
+  const savedTheme = localStorage.getItem('appTheme');
+  if (savedTheme && themes.includes(savedTheme)) {
+    currentThemeIndex = themes.indexOf(savedTheme);
+  }
+  
+  const applyTheme = () => {
+    const theme = themes[currentThemeIndex];
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById("btn-theme-toggle").textContent = themeIcons[theme];
+    localStorage.setItem('appTheme', theme);
+  };
+  
+  // Apply initial theme
+  applyTheme();
+
+  document.getElementById("btn-theme-toggle").addEventListener("click", () => {
+    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+    applyTheme();
+  });
 });
 
 function getWeekNumber(d) {
