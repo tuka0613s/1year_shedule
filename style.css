@@ -698,7 +698,7 @@ body.ultra-compact .event {
   border-radius: 0;
 }
 body.ultra-compact .week-no-right {
-  transform: translateY(-50%) scale(0.45);
+  transform: translateY(-50%) scale(0.85);
   transform-origin: right center;
   right: 0;
 }
