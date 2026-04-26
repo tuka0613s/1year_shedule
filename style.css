@@ -27,7 +27,7 @@
   --row-border: rgba(255, 255, 255, 0.015);
   --day-info-border: rgba(255, 255, 255, 0.02);
   --hover-bg: rgba(255, 255, 255, 0.04);
-  --past-overlay: rgba(0, 0, 0, 0.2);
+  --past-overlay: rgba(0, 0, 0, 0.25);
   --today-bg: rgba(56, 189, 248, 0.08);
   --today-ring: rgba(56, 189, 248, 0.15);
   --sat-color: #60a5fa;
@@ -62,7 +62,7 @@
   --row-border: rgba(0, 0, 0, 0.06);
   --day-info-border: rgba(0, 0, 0, 0.05);
   --hover-bg: rgba(0, 0, 0, 0.03);
-  --past-overlay: rgba(0, 0, 0, 0.05);
+  --past-overlay: rgba(0, 0, 0, 0.08);
   --today-bg: rgba(37, 99, 235, 0.07);
   --today-ring: rgba(37, 99, 235, 0.13);
   --sat-color: #2563eb;
@@ -97,7 +97,7 @@
   --row-border: rgba(139, 92, 246, 0.08);
   --day-info-border: rgba(139, 92, 246, 0.07);
   --hover-bg: rgba(139, 92, 246, 0.07);
-  --past-overlay: rgba(0, 0, 0, 0.3);
+  --past-overlay: rgba(0, 0, 0, 0.35);
   --today-bg: rgba(34, 211, 238, 0.07);
   --today-ring: rgba(34, 211, 238, 0.14);
   --sat-color: #22d3ee;
@@ -291,8 +291,14 @@ body {
 
 /* Past Date styling */
 .day-row.past {
-  opacity: 0.4;
   background-color: var(--past-overlay);
+}
+.day-row.past .day-info {
+  opacity: 0.4;
+}
+.day-row.past .event {
+  opacity: 0.6;
+  filter: grayscale(40%);
 }
 
 /* Today highlight */
