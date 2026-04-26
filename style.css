@@ -190,6 +190,18 @@ body {
   font-size: 0.6rem;
 }
 
+/* Saturday: blue */
+.day-row.saturday .day-info .date-num,
+.day-row.saturday .day-info .day-char {
+  color: #60a5fa;
+}
+
+/* Sunday/Holiday: red */
+.day-row.sunday .day-info .date-num,
+.day-row.sunday .day-info .day-char {
+  color: #f87171;
+}
+
 /* Past Date styling */
 .day-row.past {
   opacity: 0.4;
@@ -426,9 +438,64 @@ input[type="text"]:focus, input[type="date"]:focus {
 /* Tooltip standard behavior used via title attribute, 
 but adding text overflow gracefully handles small screens. */
 
-/* Responsive specific constraints (Applied only when screen is too small) */
+/* Responsive specific constraints */
 @media (max-width: 768px) {
-  /* No need to force min-width, grid minmax handles it naturally */
+  .app-header {
+    padding: 0 10px;
+    height: 44px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .header-controls {
+    gap: 6px;
+  }
+
+  .toggle-label {
+    font-size: 0.7rem;
+  }
+
+  button {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  /* Calendar grid: horizontal scroll on small screens */
+  .calendar-grid {
+    grid-template-columns: repeat(12, minmax(60px, 1fr));
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modal fits within viewport on iPhone */
+  .modal-content {
+    width: calc(100vw - 32px);
+    max-width: 400px;
+    padding: 18px;
+  }
+
+  /* Date inputs are easier to tap */
+  input[type="text"],
+  input[type="date"] {
+    font-size: 1rem; /* Prevent iOS auto-zoom */
+    padding: 10px 8px;
+  }
+
+  .form-group.row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .form-actions button {
+    flex: 1;
+    min-width: 80px;
+  }
 }
 
 @media (max-height: 600px) {

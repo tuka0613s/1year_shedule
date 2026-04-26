@@ -1,7 +1,6 @@
-let currentYear = 2026;
+let currentYear = new Date().getFullYear();
 let holidays = {};
-// Fixed "Today" context for demonstration since the user's metadata says local time is April 19, 2026.
-const realToday = new Date(2026, 3, 19); 
+const realToday = new Date();
 
 const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 const dayChars = ['日', '月', '火', '水', '木', '金', '土'];
@@ -133,6 +132,10 @@ function renderCalendar() {
       const dateStr = renderDateStr(date);
       const dayOfWeek = date.getDay();
       
+      // Day-of-week coloring
+      if (dayOfWeek === 0) row.classList.add("sunday");
+      if (dayOfWeek === 6) row.classList.add("saturday");
+
       // Determine state (Past, Today, Future)
       // Strip time for perfect day comparison
       const checkDate = new Date(currentYear, m, d).getTime();
