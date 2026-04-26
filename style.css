@@ -236,7 +236,7 @@ body {
 .day-info {
   display: flex;
   align-items: center;
-  width: 32px;
+  width: 36px;
   padding-left: 2px;
   font-size: 0.65rem;
   border-right: 1px solid var(--day-info-border);
@@ -276,7 +276,7 @@ body {
 
 .day-info .date-num {
   font-weight: 600;
-  width: 15px;
+  width: 18px;
   text-align: right;
   margin-right: 2px;
 }
@@ -623,10 +623,10 @@ but adding text overflow gracefully handles small screens. */
   .day-info {
     font-size: 9px;
     line-height: 1;
-    width: 24px;
+    width: 28px;
   }
   .day-info .date-num {
-    width: 12px;
+    width: 14px;
   }
   .schedule-area {
     padding: 0;
@@ -677,10 +677,10 @@ body.ultra-compact .day-row {
 body.ultra-compact .day-info {
   font-size: 8px;
   line-height: 1;
-  width: 19px;
+  width: 22px;
 }
 body.ultra-compact .day-info .date-num {
-  width: 10px;
+  width: 12px;
   margin-right: 1px;
 }
 body.ultra-compact .day-row.today .day-info .date-num::before {
@@ -698,5 +698,7 @@ body.ultra-compact .event {
   border-radius: 0;
 }
 body.ultra-compact .week-no-right {
-  display: none !important;
+  transform: translateY(-50%) scale(0.45);
+  transform-origin: right center;
+  right: 0;
 }
