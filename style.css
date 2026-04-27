@@ -657,7 +657,6 @@ but adding text overflow gracefully handles small screens. */
     transform-origin: right center;
     right: 0;
   }
-  }
 }
 
 @media (max-height: 500px) {
@@ -695,7 +694,7 @@ body.ultra-compact .month-header {
   font-size: 0.6rem;
 }
 body.ultra-compact .calendar-grid {
-  grid-template-columns: repeat(12, 1fr) !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
   padding-bottom: 0; 
   overflow: hidden !important;
 }
@@ -724,8 +723,9 @@ body.ultra-compact .schedule-area {
   padding: 0;
 }
 body.ultra-compact .event {
-  font-size: 8px;
-  padding: 0 1px;
+  font-size: 0;
+  color: transparent;
+  padding: 0;
   top: 0;
   bottom: 0;
   border-radius: 0;
