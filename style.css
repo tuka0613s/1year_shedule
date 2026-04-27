@@ -344,7 +344,7 @@ body {
 }
 
 @media (min-width: 769px) {
-  .schedule-area {
+  body.stack-horizontal .schedule-area {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr;

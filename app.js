@@ -84,6 +84,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  const toggleHorizontal = document.getElementById("toggle-horizontal");
+  const isHorizontal = localStorage.getItem("stackHorizontal") !== "false"; // Default true
+  if (isHorizontal) {
+    toggleHorizontal.checked = true;
+    document.body.classList.add("stack-horizontal");
+  } else {
+    toggleHorizontal.checked = false;
+    document.body.classList.remove("stack-horizontal");
+  }
+  toggleHorizontal.addEventListener("change", (e) => {
+    if (e.target.checked) {
+      document.body.classList.add("stack-horizontal");
+      localStorage.setItem("stackHorizontal", "true");
+    } else {
+      document.body.classList.remove("stack-horizontal");
+      localStorage.setItem("stackHorizontal", "false");
+    }
+    renderCalendar();
+  });
+
   // Theme Toggle Logic
   const themes = ['dark', 'light', 'aurora'];
   const themeIcons = { 'dark': '🌙', 'light': '☀️', 'aurora': '✨' };
@@ -205,18 +225,21 @@ function renderCalendar() {
 
   const trackCount = 4;
   const tracks = Array.from({ length: trackCount }, () => []);
+  const isHorizontalMode = document.body.classList.contains("stack-horizontal");
 
-  sorted.forEach(ev => {
-    for (let i = 0; i < trackCount; i++) {
-      // 重なりチェック
-      const hasOverlap = tracks[i].some(t => !(ev.end < t.start || ev.start > t.end));
-      if (!hasOverlap) {
-        tracks[i].push(ev);
-        eventTracks.set(ev.id, i);
-        break;
+  if (isHorizontalMode) {
+    sorted.forEach(ev => {
+      for (let i = 0; i < trackCount; i++) {
+        // 重なりチェック
+        const hasOverlap = tracks[i].some(t => !(ev.end < t.start || ev.start > t.end));
+        if (!hasOverlap) {
+          tracks[i].push(ev);
+          eventTracks.set(ev.id, i);
+          break;
+        }
       }
-    }
-  });
+    });
+  }
 
   for (let m = 0; m < 12; m++) {
     const col = document.createElement("div");
