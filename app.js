@@ -686,7 +686,14 @@ async function saveToGoogleCalendar(id, title, start, end, color) {
     fetchGoogleEvents();
   } catch (err) {
     console.error("Save to Google Error", err);
-    alert("Googleカレンダーへの保存に失敗しました。");
+    if (err.status === 401 || (err.result && err.result.error && err.result.error.status === "UNAUTHENTICATED")) {
+      gapi.client.setToken('');
+      sessionStorage.removeItem('gapi_token');
+      alert("ログインの有効期限が切れました。再度ログイン（認証）をお願いします。");
+      initGapiAndFetch();
+    } else {
+      alert("Googleカレンダーへの保存に失敗しました。");
+    }
   }
 }
 
@@ -702,6 +709,13 @@ async function deleteFromGoogleCalendar(id) {
     fetchGoogleEvents();
   } catch(err) {
     console.error("Delete from Google Error", err);
-    alert("Googleカレンダーからの削除に失敗しました。");
+    if (err.status === 401 || (err.result && err.result.error && err.result.error.status === "UNAUTHENTICATED")) {
+      gapi.client.setToken('');
+      sessionStorage.removeItem('gapi_token');
+      alert("ログインの有効期限が切れました。再度ログイン（認証）をお願いします。");
+      initGapiAndFetch();
+    } else {
+      alert("Googleカレンダーからの削除に失敗しました。");
+    }
   }
 }
