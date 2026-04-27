@@ -33,6 +33,7 @@ https://tuka0613s.github.io/1year_shedule/
 | `style.css` | ダークテーマ・レスポンシブ・土日色・ultra-compact モード |
 | `app.js` | カレンダー描画・スケジュールCRUD・Google API連携 |
 | `gapi_setup_guide.md` | Google Cloud ConsoleでのAPI設定手順書 |
+| `DESIGN.md` | ソフトウェア設計書（技術仕様・データ構造） |
 | `README.md` | このドキュメント |
 
 ## 🛠 テクノロジー
