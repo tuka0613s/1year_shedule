@@ -349,10 +349,10 @@ body {
 
 @media (min-width: 769px) {
   body.stack-horizontal .schedule-area {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr;
+    display: flex !important;
     flex-direction: row;
+    align-items: stretch;
+    justify-content: stretch;
     gap: 1px;
   }
 }
