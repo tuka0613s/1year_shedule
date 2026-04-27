@@ -111,6 +111,12 @@ document.addEventListener("DOMContentLoaded", () => {
     currentThemeIndex = (currentThemeIndex + 1) % themes.length;
     applyTheme();
   });
+
+  // Auto-init Google API if settings exist
+  const gapiSettings = getGapiSettings();
+  if (gapiSettings.apiKey && gapiSettings.clientId) {
+    setTimeout(initGapiAndFetch, 500);
+  }
 });
 
 function getWeekNumber(d) {
@@ -231,17 +237,10 @@ function renderCalendar() {
             else evEl.classList.add("multi-middle");
           }
 
-          if (ev.isGoogle) {
-            evEl.addEventListener("click", (e) => {
-              e.stopPropagation();
-              if (ev.htmlLink) window.open(ev.htmlLink, '_blank');
-            });
-          } else {
-            evEl.addEventListener("click", (e) => {
-              e.stopPropagation();
-              openModal(ev);
-            });
-          }
+          evEl.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openModal(ev);
+          });
           
           schedArea.appendChild(evEl);
         }
@@ -266,6 +265,17 @@ function openModal(ev = null, defaultDateStr = null) {
   const endInp = document.getElementById("event-end");
   const delBtn = document.getElementById("btn-delete");
   const colors = document.getElementsByName("color");
+  const saveGoogleGroup = document.getElementById("google-save-group");
+  const saveGoogleCheck = document.getElementById("save-to-google");
+
+  const settings = getGapiSettings();
+  const isGapiLinked = !!(settings.apiKey && settings.clientId && gapiInited);
+  
+  if (isGapiLinked) {
+    saveGoogleGroup.style.display = "block";
+  } else {
+    saveGoogleGroup.style.display = "none";
+  }
 
   if (ev) {
     titleEl.textContent = "予定を編集";
@@ -274,6 +284,14 @@ function openModal(ev = null, defaultDateStr = null) {
     startInp.value = ev.start;
     endInp.value = ev.end;
     delBtn.classList.remove("hidden");
+    
+    if (ev.isGoogle) {
+      saveGoogleCheck.checked = true;
+      saveGoogleCheck.disabled = true;
+    } else {
+      saveGoogleCheck.checked = false;
+      saveGoogleCheck.disabled = true;
+    }
     
     for (let c of colors) {
       if (c.value.includes(ev.color.replace('bg-', ''))) c.checked = true;
@@ -286,6 +304,9 @@ function openModal(ev = null, defaultDateStr = null) {
     endInp.value = defaultDateStr;
     delBtn.classList.add("hidden");
     colors[0].checked = true;
+    
+    saveGoogleCheck.checked = isGapiLinked;
+    saveGoogleCheck.disabled = false;
   }
   
   modal.classList.remove("hidden");
@@ -308,10 +329,14 @@ function setupModal() {
 
   delBtn.addEventListener("click", () => {
     const id = document.getElementById("event-id").value;
-    schedules = schedules.filter(s => s.id !== id);
-    saveSchedules();
-    closeM();
-    renderCalendar();
+    if (id.startsWith('gapi_')) {
+      deleteFromGoogleCalendar(id);
+    } else {
+      schedules = schedules.filter(s => s.id !== id);
+      saveSchedules();
+      closeM();
+      renderCalendar();
+    }
   });
 
   form.addEventListener("submit", (e) => {
@@ -322,36 +347,38 @@ function setupModal() {
     let end = document.getElementById("event-end").value;
     
     let color = Array.from(document.getElementsByName("color")).find(c => c.checked).value;
-    // convert accent-blue to bg-blue
     color = color.replace("accent-", "bg-");
 
     if (start > end) {
-      // Swap if user puts wrong order
       const temp = start;
       start = end;
       end = temp;
     }
 
-    if (id) {
-      // Edit
-      const idx = schedules.findIndex(s => s.id === id);
-      if (idx !== -1) schedules[idx] = { id, title, start, end, color };
-    } else {
-      // Create
-      schedules.push({
-        id: Date.now().toString(),
-        title, start, end, color
-      });
-    }
+    const saveGoogleCheck = document.getElementById("save-to-google");
+    const isGoogleSave = (saveGoogleCheck.checked && !saveGoogleCheck.disabled) || (id && id.startsWith('gapi_'));
 
-    saveSchedules();
-    closeM();
-    renderCalendar();
+    if (isGoogleSave) {
+      saveToGoogleCalendar(id, title, start, end, color);
+    } else {
+      if (id) {
+        const idx = schedules.findIndex(s => s.id === id);
+        if (idx !== -1) schedules[idx] = { id, title, start, end, color };
+      } else {
+        schedules.push({
+          id: Date.now().toString(),
+          title, start, end, color
+        });
+      }
+      saveSchedules();
+      closeM();
+      renderCalendar();
+    }
   });
 }
 
 // --- Google Calendar Integration ---
-const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 let gapiTokenClient;
 let gapiInited = false;
 let gisInited = false;
@@ -515,7 +542,7 @@ async function fetchGoogleEvents() {
         title: ev.summary || '(無題)',
         start: startStr,
         end: endStr,
-        color: 'bg-blue gapi-event',
+        color: 'bg-blue',
         isGoogle: true,
         htmlLink: ev.htmlLink
       };
@@ -530,5 +557,55 @@ async function fetchGoogleEvents() {
     } else {
       alert("カレンダーの予定取得に失敗しました。");
     }
+  }
+}
+
+async function saveToGoogleCalendar(id, title, start, end, color) {
+  const settings = getGapiSettings();
+  const endD = new Date(end);
+  endD.setDate(endD.getDate() + 1);
+  const endStr = renderDateStr(endD);
+
+  const eventBody = {
+    summary: title,
+    start: { date: start },
+    end: { date: endStr }
+  };
+
+  try {
+    if (id && id.startsWith('gapi_')) {
+      const realId = id.replace('gapi_', '');
+      await gapi.client.calendar.events.patch({
+        calendarId: settings.calendarId,
+        eventId: realId,
+        resource: eventBody
+      });
+    } else {
+      await gapi.client.calendar.events.insert({
+        calendarId: settings.calendarId,
+        resource: eventBody
+      });
+    }
+    document.getElementById("schedule-modal").classList.add("hidden");
+    fetchGoogleEvents();
+  } catch (err) {
+    console.error("Save to Google Error", err);
+    alert("Googleカレンダーへの保存に失敗しました。");
+  }
+}
+
+async function deleteFromGoogleCalendar(id) {
+  const settings = getGapiSettings();
+  const realId = id.replace('gapi_', '');
+  try {
+    await gapi.client.calendar.events.delete({
+      calendarId: settings.calendarId,
+      eventId: realId
+    });
+    document.getElementById("schedule-modal").classList.add("hidden");
+    fetchGoogleEvents();
+  } catch(err) {
+    console.error("Delete from Google Error", err);
+    alert("Googleカレンダーからの削除に失敗しました。");
   }
 }
