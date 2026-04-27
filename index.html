@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>One Year Schedule</title>
-  <link rel="stylesheet" href="style.css?v=17">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=18">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;600&display=swap"
+    rel="stylesheet">
   <script async defer src="https://apis.google.com/js/api.js"></script>
   <script async defer src="https://accounts.google.com/gsi/client"></script>
-  
+
   <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
@@ -16,6 +19,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Schedule">
 </head>
+
 <body>
   <div class="app-container">
     <header class="app-header">
@@ -34,7 +38,7 @@
         <button id="btn-install-pwa" class="btn-install hidden" title="アプリをインストール">📲 アプリ</button>
       </div>
     </header>
-    
+
     <main class="calendar-grid" id="calendar">
       <!-- Months will be injected here via JS -->
     </main>
@@ -63,11 +67,15 @@
         <div class="form-group">
           <label>カラー</label>
           <div class="color-picker">
-            <label><input type="radio" name="color" value="accent-blue" checked><span class="color-dot bg-blue"></span></label>
+            <label><input type="radio" name="color" value="accent-blue" checked><span
+                class="color-dot bg-blue"></span></label>
             <label><input type="radio" name="color" value="accent-pink"><span class="color-dot bg-pink"></span></label>
-            <label><input type="radio" name="color" value="accent-green"><span class="color-dot bg-green"></span></label>
-            <label><input type="radio" name="color" value="accent-purple"><span class="color-dot bg-purple"></span></label>
-            <label><input type="radio" name="color" value="accent-orange"><span class="color-dot bg-orange"></span></label>
+            <label><input type="radio" name="color" value="accent-green"><span
+                class="color-dot bg-green"></span></label>
+            <label><input type="radio" name="color" value="accent-purple"><span
+                class="color-dot bg-purple"></span></label>
+            <label><input type="radio" name="color" value="accent-orange"><span
+                class="color-dot bg-orange"></span></label>
           </div>
         </div>
         <div class="form-group" id="google-save-group" style="display: none;">
@@ -113,4 +121,5 @@
 
   <script src="app.js?v=6"></script>
 </body>
+
 </html>
