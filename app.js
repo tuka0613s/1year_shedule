@@ -51,12 +51,18 @@ document.addEventListener("DOMContentLoaded", () => {
     currentYear--;
     document.getElementById("current-year").textContent = currentYear;
     renderCalendar();
+    if (typeof gapiInited !== 'undefined' && gapiInited && gapi.client.getToken() !== null) {
+      fetchGoogleEvents();
+    }
   });
 
   document.getElementById("btn-next-year").addEventListener("click", () => {
     currentYear++;
     document.getElementById("current-year").textContent = currentYear;
     renderCalendar();
+    if (typeof gapiInited !== 'undefined' && gapiInited && gapi.client.getToken() !== null) {
+      fetchGoogleEvents();
+    }
   });
 
   const toggleWeek = document.getElementById("toggle-week");
@@ -209,7 +215,8 @@ function renderCalendar() {
       schedArea.className = "schedule-area";
       
       // Find events that intersect this date
-      schedules.forEach(ev => {
+      const allEvents = schedules.concat(typeof gapiEvents !== 'undefined' ? gapiEvents : []);
+      allEvents.forEach(ev => {
         if (dateStr >= ev.start && dateStr <= ev.end) {
           const evEl = document.createElement("div");
           evEl.className = `event ${ev.color.replace('accent-', '')}`; // support legacy or new names
@@ -224,10 +231,17 @@ function renderCalendar() {
             else evEl.classList.add("multi-middle");
           }
 
-          evEl.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openModal(ev);
-          });
+          if (ev.isGoogle) {
+            evEl.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (ev.htmlLink) window.open(ev.htmlLink, '_blank');
+            });
+          } else {
+            evEl.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openModal(ev);
+            });
+          }
           
           schedArea.appendChild(evEl);
         }
@@ -334,4 +348,187 @@ function setupModal() {
     closeM();
     renderCalendar();
   });
+}
+
+// --- Google Calendar Integration ---
+const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+let gapiTokenClient;
+let gapiInited = false;
+let gisInited = false;
+let gapiEvents = [];
+
+function getGapiSettings() {
+  return {
+    apiKey: localStorage.getItem('gapi_key') || '',
+    clientId: localStorage.getItem('gapi_client_id') || '',
+    calendarId: localStorage.getItem('gapi_calendar_id') || 'primary'
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnGoogleSync = document.getElementById("btn-google-sync");
+  const gModal = document.getElementById("google-settings-modal");
+  const gForm = document.getElementById("google-settings-form");
+  const btnCancelGapi = document.getElementById("btn-cancel-gapi");
+  const btnLogoutGapi = document.getElementById("btn-logout-gapi");
+  
+  const gapiKeyInp = document.getElementById("gapi-key");
+  const gapiClientInp = document.getElementById("gapi-client-id");
+  const gapiCalInp = document.getElementById("gapi-calendar-id");
+
+  const closeGModal = () => gModal.classList.add("hidden");
+
+  if(btnCancelGapi) {
+    btnCancelGapi.addEventListener("click", closeGModal);
+  }
+
+  if(gModal) {
+    gModal.addEventListener("click", (e) => {
+      if (e.target === gModal) closeGModal();
+    });
+  }
+
+  if(btnGoogleSync) {
+    btnGoogleSync.addEventListener("click", () => {
+      const settings = getGapiSettings();
+      if (!settings.apiKey || !settings.clientId) {
+        gapiKeyInp.value = settings.apiKey;
+        gapiClientInp.value = settings.clientId;
+        gapiCalInp.value = settings.calendarId;
+        btnLogoutGapi.classList.add("hidden");
+        gModal.classList.remove("hidden");
+      } else {
+        initGapiAndFetch();
+      }
+    });
+
+    btnGoogleSync.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      const settings = getGapiSettings();
+      gapiKeyInp.value = settings.apiKey;
+      gapiClientInp.value = settings.clientId;
+      gapiCalInp.value = settings.calendarId;
+      if(settings.apiKey) btnLogoutGapi.classList.remove("hidden");
+      gModal.classList.remove("hidden");
+    });
+  }
+
+  if(gForm) {
+    gForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      localStorage.setItem("gapi_key", gapiKeyInp.value.trim());
+      localStorage.setItem("gapi_client_id", gapiClientInp.value.trim());
+      localStorage.setItem("gapi_calendar_id", gapiCalInp.value.trim() || 'primary');
+      closeGModal();
+      initGapiAndFetch();
+    });
+  }
+
+  if(btnLogoutGapi) {
+    btnLogoutGapi.addEventListener("click", () => {
+      localStorage.removeItem("gapi_key");
+      localStorage.removeItem("gapi_client_id");
+      localStorage.removeItem("gapi_calendar_id");
+      gapiEvents = [];
+      if (gapiInited && gapi.client.getToken() !== null) {
+        gapi.client.setToken('');
+      }
+      closeGModal();
+      renderCalendar();
+    });
+  }
+});
+
+async function initGapiAndFetch() {
+  const settings = getGapiSettings();
+  if (!settings.apiKey || !settings.clientId) return;
+
+  try {
+    if (!gapiInited) {
+      await new Promise((resolve, reject) => {
+        gapi.load('client', {callback: resolve, onerror: reject});
+      });
+      await gapi.client.init({
+        apiKey: settings.apiKey,
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+      });
+      gapiInited = true;
+    }
+
+    if (!gisInited) {
+      gapiTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: settings.clientId,
+        scope: SCOPES,
+        callback: (tokenResponse) => {
+          if (tokenResponse.error !== undefined) {
+            console.error("GIS Error", tokenResponse);
+            alert("Google連携エラー: " + tokenResponse.error);
+            return;
+          }
+          fetchGoogleEvents();
+        },
+      });
+      gisInited = true;
+    }
+
+    if (gapi.client.getToken() === null) {
+      gapiTokenClient.requestAccessToken({prompt: 'consent'});
+    } else {
+      gapiTokenClient.requestAccessToken({prompt: ''});
+    }
+  } catch (err) {
+    console.error("GAPI Init Error", err);
+    alert("Google API初期化エラー。APIキーなどを確認してください。");
+  }
+}
+
+async function fetchGoogleEvents() {
+  const settings = getGapiSettings();
+  const timeMin = new Date(currentYear, 0, 1).toISOString();
+  const timeMax = new Date(currentYear, 11, 31, 23, 59, 59).toISOString();
+
+  try {
+    const response = await gapi.client.calendar.events.list({
+      'calendarId': settings.calendarId,
+      'timeMin': timeMin,
+      'timeMax': timeMax,
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 500,
+      'orderBy': 'startTime'
+    });
+    
+    const events = response.result.items;
+    
+    gapiEvents = events.map(ev => {
+      const startStr = ev.start.date || ev.start.dateTime.split('T')[0];
+      let endStr = ev.end.date || ev.end.dateTime.split('T')[0];
+      
+      if (ev.end.date && startStr !== endStr) {
+        const endD = new Date(endStr);
+        endD.setDate(endD.getDate() - 1);
+        endStr = renderDateStr(endD);
+      }
+      
+      return {
+        id: 'gapi_' + ev.id,
+        title: ev.summary || '(無題)',
+        start: startStr,
+        end: endStr,
+        color: 'bg-blue gapi-event',
+        isGoogle: true,
+        htmlLink: ev.htmlLink
+      };
+    });
+    
+    renderCalendar();
+  } catch (err) {
+    console.error("Fetch Events Error", err);
+    if(err.result && err.result.error && err.result.error.status === "UNAUTHENTICATED") {
+      gapi.client.setToken('');
+      initGapiAndFetch();
+    } else {
+      alert("カレンダーの予定取得に失敗しました。");
+    }
+  }
 }

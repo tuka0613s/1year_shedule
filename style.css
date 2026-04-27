@@ -531,6 +531,18 @@ input[type="text"]:focus, input[type="date"]:focus {
 .btn-delete { background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.4); margin-right: auto; }
 .btn-delete:hover { background: rgba(239, 68, 68, 0.3); }
 
+.hidden { display: none !important; }
+.btn-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.4); margin-right: auto; }
+.btn-danger:hover { background: rgba(239, 68, 68, 0.3); }
+.btn-google { background: #ffffff; color: #333333; border: 1px solid #dddddd; display: flex; align-items: center; gap: 4px; padding-left: 8px; padding-right: 8px;}
+.btn-google:hover { background: #f1f5f9; color: #000; }
+[data-theme="dark"] .btn-google { background: #333333; color: #ffffff; border: 1px solid #555; }
+[data-theme="dark"] .btn-google:hover { background: #444444; }
+[data-theme="aurora"] .btn-google { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+[data-theme="aurora"] .btn-google:hover { background: rgba(255, 255, 255, 0.2); }
+.settings-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; }
+.event.gapi-event { border-left-style: solid; border-top: 1px dashed rgba(255,255,255,0.4); border-bottom: 1px dashed rgba(255,255,255,0.4); border-right: 1px dashed rgba(255,255,255,0.4); }
+
 /* Remove empty day rows styling if needed, but flex will handle them cleanly */
 .day-row.empty {
   visibility: hidden;
