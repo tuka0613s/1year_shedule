@@ -577,6 +577,13 @@ async function initGapiAndFetch() {
   const settings = getGapiSettings();
   if (!settings.apiKey || !settings.clientId) return;
 
+  // ライブラリ読み込み待ち
+  if (typeof gapi === 'undefined' || typeof google === 'undefined') {
+    console.warn("Google API libraries not ready. Waiting...");
+    setTimeout(initGapiAndFetch, 500);
+    return;
+  }
+
   try {
     if (!gapiInited) {
       await new Promise((resolve, reject) => {

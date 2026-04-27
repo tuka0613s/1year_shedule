@@ -141,7 +141,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
+  padding: 0 4px;
   background: var(--header-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--panel-border);
@@ -157,7 +157,7 @@ body {
 .year-controls {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .year-controls h1 {
@@ -168,7 +168,12 @@ body {
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+}
+
+.app-header button {
+  padding: 4px 6px;
+  font-size: 0.8rem;
 }
 
 .toggle-label {
