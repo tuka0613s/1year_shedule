@@ -7,10 +7,7 @@ const dayChars = ['日', '月', '火', '水', '木', '金', '土'];
 
 const defaultSchedules = [
   { id: Date.now().toString() + '1', title: "新年イベント", start: "2026-01-01", end: "2026-01-03", color: "bg-orange" },
-  { id: Date.now().toString() + '2', title: "システム移行", start: "2026-04-18", end: "2026-04-20", color: "bg-blue" },
-  { id: Date.now().toString() + '3', title: "打ち合わせ", start: "2026-04-19", end: "2026-04-19", color: "bg-pink" },
-  { id: Date.now().toString() + '4', title: "夏期休暇", start: "2026-08-10", end: "2026-08-15", color: "bg-green" },
-  { id: Date.now().toString() + '5', title: "四半期報告会", start: "2026-10-05", end: "2026-10-05", color: "bg-purple" }
+  { id: Date.now().toString() + '2', title: "お盆休み", start: "2026-08-13", end: "2026-08-16", color: "bg-green" }
 ];
 
 let schedules = [];
