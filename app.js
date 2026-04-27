@@ -478,6 +478,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("gapi_key");
       localStorage.removeItem("gapi_client_id");
       localStorage.removeItem("gapi_calendar_id");
+      sessionStorage.removeItem("gapi_token");
       gapiEvents = [];
       if (gapiInited && gapi.client.getToken() !== null) {
         gapi.client.setToken('');
@@ -514,14 +515,26 @@ async function initGapiAndFetch() {
             alert("Google連携エラー: " + tokenResponse.error);
             return;
           }
+          // トークンをsessionStorageに保存（F5更新対策）
+          sessionStorage.setItem('gapi_token', JSON.stringify(tokenResponse));
           fetchGoogleEvents();
         },
       });
       gisInited = true;
     }
 
+    // sessionStorageに有効なトークンがあれば再利用
+    const savedTokenStr = sessionStorage.getItem('gapi_token');
+    if (savedTokenStr) {
+      const token = JSON.parse(savedTokenStr);
+      gapi.client.setToken(token);
+      fetchGoogleEvents();
+      return;
+    }
+
     if (gapi.client.getToken() === null) {
-      gapiTokenClient.requestAccessToken({prompt: 'consent'});
+      // prompt: 'consent' だと毎回許可画面が出るため空文字にする
+      gapiTokenClient.requestAccessToken({prompt: ''});
     } else {
       gapiTokenClient.requestAccessToken({prompt: ''});
     }
