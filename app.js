@@ -631,7 +631,19 @@ async function initGapiAndFetch() {
     }
   } catch (err) {
     console.error("GAPI Init Error", err);
-    alert("Google API初期化エラー。APIキーなどを確認してください。");
+    alert("Google API初期化エラー。APIキーに誤りがある可能性があります。再設定してください。");
+    
+    gapiInited = false;
+    
+    const gModal = document.getElementById("google-settings-modal");
+    if (gModal) {
+      document.getElementById("gapi-key").value = settings.apiKey || '';
+      document.getElementById("gapi-client-id").value = settings.clientId || '';
+      document.getElementById("gapi-calendar-id").value = settings.calendarId || 'primary';
+      const btnLogout = document.getElementById("btn-logout-gapi");
+      if (settings.apiKey && btnLogout) btnLogout.classList.remove("hidden");
+      gModal.classList.remove("hidden");
+    }
   }
 }
 
