@@ -384,6 +384,28 @@ let gapiInited = false;
 let gisInited = false;
 let gapiEvents = [];
 
+const googleColorToAppColor = {
+  '1': 'bg-purple',
+  '2': 'bg-green',
+  '3': 'bg-purple',
+  '4': 'bg-pink',
+  '5': 'bg-orange',
+  '6': 'bg-orange',
+  '7': 'bg-blue',
+  '8': 'bg-blue',
+  '9': 'bg-blue',
+  '10': 'bg-green',
+  '11': 'bg-pink'
+};
+
+const appColorToGoogleColor = {
+  'bg-blue': '9',
+  'bg-pink': '4',
+  'bg-green': '10',
+  'bg-purple': '3',
+  'bg-orange': '6'
+};
+
 function getGapiSettings() {
   return {
     apiKey: localStorage.getItem('gapi_key') || '',
@@ -537,12 +559,18 @@ async function fetchGoogleEvents() {
         endStr = renderDateStr(endD);
       }
       
+      const colorId = ev.colorId;
+      let mappedColor = 'bg-blue';
+      if (colorId && googleColorToAppColor[colorId]) {
+        mappedColor = googleColorToAppColor[colorId];
+      }
+      
       return {
         id: 'gapi_' + ev.id,
         title: ev.summary || '(無題)',
         start: startStr,
         end: endStr,
-        color: 'bg-blue',
+        color: mappedColor,
         isGoogle: true,
         htmlLink: ev.htmlLink
       };
@@ -571,6 +599,10 @@ async function saveToGoogleCalendar(id, title, start, end, color) {
     start: { date: start },
     end: { date: endStr }
   };
+
+  if (color && appColorToGoogleColor[color]) {
+    eventBody.colorId = appColorToGoogleColor[color];
+  }
 
   try {
     if (id && id.startsWith('gapi_')) {
