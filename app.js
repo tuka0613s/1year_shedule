@@ -524,7 +524,14 @@ document.addEventListener("DOMContentLoaded", () => {
         btnLogoutGapi.classList.add("hidden");
         gModal.classList.remove("hidden");
       } else {
-        initGapiAndFetch();
+        // iPhoneのホーム画面など、更新ボタンがない環境での強制リロードを兼ねる
+        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        if (isStandalone) {
+          // リロードして最新のコード/データを読み込む（起動時に自動同期される）
+          window.location.reload();
+        } else {
+          initGapiAndFetch();
+        }
       }
     });
 
@@ -569,6 +576,12 @@ document.addEventListener("DOMContentLoaded", () => {
 async function initGapiAndFetch() {
   const settings = getGapiSettings();
   if (!settings.apiKey || !settings.clientId) return;
+  
+  // ライブラリの読み込み待ち安全策
+  if (typeof gapi === 'undefined' || typeof google === 'undefined') {
+    setTimeout(initGapiAndFetch, 500);
+    return;
+  }
 
   try {
     if (!gapiInited) {
