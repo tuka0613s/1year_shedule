@@ -192,6 +192,32 @@ function renderCalendar() {
   const grid = document.getElementById("calendar");
   grid.innerHTML = "";
 
+  // 予定をカラム（トラック）に割り当てるロジック
+  const allEventsGlobal = schedules.concat(typeof gapiEvents !== 'undefined' ? gapiEvents : []);
+  const eventTracks = new Map();
+  // 開始日が早い順、かつ期間が長い順にソート
+  const sorted = [...allEventsGlobal].sort((a, b) => {
+    if (a.start !== b.start) return a.start.localeCompare(b.start);
+    const durA = parseDateStr(a.end) - parseDateStr(a.start);
+    const durB = parseDateStr(b.end) - parseDateStr(b.start);
+    return durB - durA;
+  });
+
+  const trackCount = 4;
+  const tracks = Array.from({ length: trackCount }, () => []);
+
+  sorted.forEach(ev => {
+    for (let i = 0; i < trackCount; i++) {
+      // 重なりチェック
+      const hasOverlap = tracks[i].some(t => !(ev.end < t.start || ev.start > t.end));
+      if (!hasOverlap) {
+        tracks[i].push(ev);
+        eventTracks.set(ev.id, i);
+        break;
+      }
+    }
+  });
+
   for (let m = 0; m < 12; m++) {
     const col = document.createElement("div");
     col.className = "month-col";
@@ -273,9 +299,15 @@ function renderCalendar() {
       const allEvents = schedules.concat(typeof gapiEvents !== 'undefined' ? gapiEvents : []);
       allEvents.forEach(ev => {
         if (dateStr >= ev.start && dateStr <= ev.end) {
+          const trackIdx = eventTracks.get(ev.id);
+          
           const evEl = document.createElement("div");
-          evEl.className = `event ${ev.color.replace('accent-', '')}`; // support legacy or new names
-          evEl.textContent = ev.title;
+          evEl.className = `event ${ev.color.replace('accent-', '')}`; 
+          evEl.textContent = ev.title || '\u00A0'; // 空文字でも高さを確保
+          
+          if (trackIdx !== undefined) {
+            evEl.style.gridColumn = trackIdx + 1;
+          }
           
           // Tooltip with title (natively handles overflow display needs nicely)
           evEl.title = `[${ev.start} - ${ev.end}]\n${ev.title}`;

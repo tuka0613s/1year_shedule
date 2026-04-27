@@ -343,6 +343,16 @@ body {
   gap: 1px;
 }
 
+@media (min-width: 769px) {
+  .schedule-area {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    flex-direction: row;
+    gap: 1px;
+  }
+}
+
 .event {
   font-size: 0.6rem;
   padding: 0 4px;
