@@ -685,6 +685,7 @@ async function fetchGoogleEvents() {
   } catch (err) {
     console.error("Fetch Events Error", err);
     if(err.result && err.result.error && err.result.error.status === "UNAUTHENTICATED") {
+      sessionStorage.removeItem('gapi_token');
       gapi.client.setToken('');
       initGapiAndFetch();
     } else {
