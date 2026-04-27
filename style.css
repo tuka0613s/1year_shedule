@@ -723,9 +723,9 @@ body.ultra-compact .schedule-area {
   padding: 0;
 }
 body.ultra-compact .event {
-  font-size: 0;
-  color: transparent;
-  padding: 0;
+  font-size: 8px;
+  color: inherit;
+  padding: 0 1px;
   top: 0;
   bottom: 0;
   border-radius: 0;
