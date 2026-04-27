@@ -141,7 +141,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 8px;
   background: var(--header-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--panel-border);
@@ -149,7 +149,7 @@ body {
 }
 
 .app-header h1 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -157,7 +157,7 @@ body {
 .year-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 4px;
 }
 
 .year-controls h1 {
@@ -168,7 +168,7 @@ body {
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .toggle-label {
