@@ -564,6 +564,7 @@ async function fetchGoogleEvents() {
       if (colorId && googleColorToAppColor[colorId]) {
         mappedColor = googleColorToAppColor[colorId];
       }
+      console.log(`Fetched Event: ${ev.summary}, colorId: ${colorId}, mappedColor: ${mappedColor}`);
       
       return {
         id: 'gapi_' + ev.id,
@@ -602,6 +603,7 @@ async function saveToGoogleCalendar(id, title, start, end, color) {
 
   if (color && appColorToGoogleColor[color]) {
     eventBody.colorId = appColorToGoogleColor[color];
+    console.log(`Saving Event: ${title}, selectedColor: ${color}, mappedColorId: ${eventBody.colorId}`);
   }
 
   try {
