@@ -556,8 +556,9 @@ but adding text overflow gracefully handles small screens. */
 /* Responsive specific constraints */
 @media (max-width: 768px) {
   .app-header {
-    padding: 0 10px;
-    height: 44px;
+    padding: 4px 10px;
+    height: auto;
+    min-height: 44px;
     flex-wrap: wrap;
     gap: 4px;
   }
@@ -680,10 +681,17 @@ but adding text overflow gracefully handles small screens. */
 
 /* ------------ ULTRA COMPACT MODE (FORCE FIT 1 SCREEN ONSCREEN) ------------ */
 body.ultra-compact .app-header {
-  height: 24px;
-  padding: 0 8px;
+  height: auto;
+  min-height: 24px;
+  padding: 2px 8px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-body.ultra-compact .app-header h1 { font-size: 0.8rem; }
+body.ultra-compact .app-header::-webkit-scrollbar { display: none; }
+body.ultra-compact .app-header h1 { font-size: 0.8rem; flex-shrink: 0; }
 body.ultra-compact .header-controls button,
 body.ultra-compact .year-controls button {
   padding: 2px 6px;
@@ -729,6 +737,10 @@ body.ultra-compact .event {
   top: 0;
   bottom: 0;
   border-radius: 0;
+}
+body.ultra-compact .event.multi-middle,
+body.ultra-compact .event.multi-end {
+  color: transparent !important;
 }
 body.ultra-compact .week-no-right {
   transform: translateY(-50%) scale(0.85);
