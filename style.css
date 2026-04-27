@@ -537,6 +537,20 @@ input[type="text"]:focus, input[type="date"]:focus {
 .btn-danger:hover { background: rgba(239, 68, 68, 0.3); }
 .btn-google { background: #ffffff; color: #333333; border: 1px solid #dddddd; display: flex; align-items: center; gap: 4px; padding-left: 8px; padding-right: 8px;}
 .btn-google:hover { background: #f1f5f9; color: #000; }
+
+.btn-install {
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-install:hover {
+  background: #059669;
+}
+
 [data-theme="dark"] .btn-google { background: #333333; color: #ffffff; border: 1px solid #555; }
 [data-theme="dark"] .btn-google:hover { background: #444444; }
 [data-theme="aurora"] .btn-google { background: rgba(255, 255, 255, 0.1); color: #ffffff; }

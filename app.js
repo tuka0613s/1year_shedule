@@ -114,7 +114,59 @@ document.addEventListener("DOMContentLoaded", () => {
   if (gapiSettings.apiKey && gapiSettings.clientId) {
     setTimeout(initGapiAndFetch, 500);
   }
+
+  // PWA Install Logic
+  setupPWA();
 });
+
+// --- PWA Logic ---
+let deferredPrompt;
+
+function setupPWA() {
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW Registered', reg))
+        .catch(err => console.log('SW Registration Failed', err));
+    });
+  }
+
+  const installBtn = document.getElementById('btn-install-pwa');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI notify the user they can install the PWA
+    if (installBtn) {
+      installBtn.classList.remove('hidden');
+    }
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      // Show the install prompt
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      // We've used the prompt, and can't use it again, throw it away
+      deferredPrompt = null;
+      // Hide the app-provided install button
+      installBtn.classList.add('hidden');
+    });
+  }
+
+  window.addEventListener('appinstalled', (evt) => {
+    console.log('App installed successfully');
+    if (installBtn) {
+      installBtn.classList.add('hidden');
+    }
+  });
+}
 
 function getWeekNumber(d) {
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
