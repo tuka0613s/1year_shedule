@@ -35,17 +35,24 @@
 - `gapi_key`, `gapi_client_id`, `gapi_calendar_id`: Google API設定
 - `appTheme`: 現在のテーマ名 (`dark`, `light`, `aurora`)
 - `ultraCompact`: 超圧縮モードのON/OFF状態
+- `stackHorizontal`: 横並び表示モードのON/OFF状態
+- `gapi_token`: (sessionStorage) Googleアクセストークン（有効期間内のみ保持）
 
 ## 4. 主要コンポーネント・ロジック
 
 ### 4.1 カレンダー描画 (`renderCalendar`)
 - 12ヶ月分をループで生成。
-- 各月を `month-col` (Flex/Grid) として描画。
+- 各月の `month-col` (Flex/Grid) として描画。
 - 31日分の `day-row` を生成し、祝日・今日・過去日の判定を行いクラスを付与。
-- **予定の重複対応**: `schedule-area` 内で予定（`event`）を `position: relative` でフロー表示。CSS Flexboxにより縦に並びます。
+- **予定の重複対応**: 
+  - `stack-horizontal` クラス未付与時：`schedule-area` 内で予定（`event`）を `position: relative` でフロー表示。CSS Flexboxにより縦に並びます。
+  - `stack-horizontal` クラス付与時：`schedule-area` が `flex-direction: row` になり、予定が横に並びます。予定数に応じて `flex: 1` で等幅分割されます。
+- **描画最適化**: 予定名が空の場合、非表示にならないよう `\u00A0` (NBSP) を挿入して高さを確保します。
 
 ### 4.2 Google API連携
 - **認証**: Google Identity Services (GIS) を使用。アクセストークンは `sessionStorage` に保持し、F5更新時の再ログインを抑制。
+  - **401エラー対応**: トークン期限切れ時は自動的に `sessionStorage` をクリアし、再認証を促します。
+- **初期化安全策**: アプリ起動時にAPIライブラリのロード完了を待ち合わせてから初期化を実行します。初期化に失敗した場合は、設定モーダルを自動的に開きます。
 - **同期**: `fetchGoogleEvents` で期間指定（実年）して取得。
 - **色マッピング**: `googleColorToAppColor` / `appColorToGoogleColor` により、Googleの `colorId` とアプリの `bg-xxxx` クラスを相互変換。
 
