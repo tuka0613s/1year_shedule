@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sche-v5';
+const CACHE_NAME = 'sche-v6';
 const ASSETS = [
   './',
   './index.html',

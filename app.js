@@ -6,8 +6,8 @@ const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', 
 const dayChars = ['日', '月', '火', '水', '木', '金', '土'];
 
 const defaultSchedules = [
-  { id: Date.now().toString() + '1', title: "新年イベント", start: "2026-01-01", end: "2026-01-03", color: "bg-orange" },
-  { id: Date.now().toString() + '2', title: "お盆休み", start: "2026-08-13", end: "2026-08-16", color: "bg-green" }
+  { id: Date.now().toString() + '1', title: "新年イベント", start: `${currentYear}-01-01`, end: `${currentYear}-01-03`, color: "bg-orange" },
+  { id: Date.now().toString() + '2', title: "お盆休み", start: `${currentYear}-08-13`, end: `${currentYear}-08-16`, color: "bg-green" }
 ];
 
 let schedules = [];
@@ -31,7 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
       holidays = data;
       renderCalendar();
     })
-    .catch(() => renderCalendar());
+    .catch((err) => {
+      console.error("Holiday Fetch Error:", err);
+      renderCalendar();
+    });
 
   setupModal();
   

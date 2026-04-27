@@ -37,6 +37,7 @@
 - `ultraCompact`: 超圧縮モードのON/OFF状態
 - `stackHorizontal`: 横並び表示モードのON/OFF状態
 - `gapi_token`: (sessionStorage) Googleアクセストークン（有効期間内のみ保持）
+- **Security Note**: APIキーとクライアントIDは `localStorage` に保存されます。これはPWAとしての利便性を優先した設計であり、公共の端末での利用は推奨されません。個人利用を想定しています。
 
 ## 4. 主要コンポーネント・ロジック
 
@@ -46,7 +47,10 @@
 - 31日分の `day-row` を生成し、祝日・今日・過去日の判定を行いクラスを付与。
 - **予定の重複対応**: 
   - `stack-horizontal` クラス未付与時：`schedule-area` 内で予定（`event`）を `position: relative` でフロー表示。CSS Flexboxにより縦に並びます。
-  - `stack-horizontal` クラス付与時：`schedule-area` が `flex-direction: row` になり、予定が横に並びます。予定数に応じて `flex: 1` で等幅分割されます。
+  - `stack-horizontal` モード時（PCのみ）：`body.stack-horizontal` クラスが付与されると、`schedule-area` が `flex-direction: row` になり、予定が横に並びます。予定数に応じて `flex: 1` で等幅分割されます。
+- **UI特殊機能**:
+  - **今日へ移動**: 「今日」ボタンクリックで、今日の行を一時的にハイライトします。
+  - **アプリ更新**: 「↻」ボタンでページをリロードし、PWAのキャッシュ更新を確実に行います。
 - **描画最適化**: 予定名が空の場合、非表示にならないよう `\u00A0` (NBSP) を挿入して高さを確保します。
 
 ### 4.2 Google API連携
